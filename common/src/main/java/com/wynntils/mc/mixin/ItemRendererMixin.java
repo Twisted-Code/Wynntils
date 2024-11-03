@@ -1,5 +1,5 @@
 /*
- * Copyright © Wynntils 2022-2023.
+ * Copyright © Wynntils 2022-2024.
  * This file is released under LGPLv3. See LICENSE for full license details.
  */
 package com.wynntils.mc.mixin;
@@ -21,13 +21,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class ItemRendererMixin {
     @Inject(
             method =
-                    "render(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemDisplayContext;ZLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;IILnet/minecraft/client/resources/model/BakedModel;)V",
+                    "renderItemModelRaw(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemDisplayContext;ZLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/MultiBufferSource;IILnet/minecraft/client/resources/model/BakedModel;ZF)V",
             at =
                     @At(
                             target = "Lcom/mojang/blaze3d/vertex/PoseStack;translate(FFF)V",
                             shift = At.Shift.BEFORE,
                             value = "INVOKE"))
-    private void onRenderItem(
+    private void onRenderItemModelRaw(
             ItemStack itemStack,
             ItemDisplayContext itemDisplayContext,
             boolean leftHand,
@@ -36,6 +36,8 @@ public abstract class ItemRendererMixin {
             int combinedLight,
             int combinedOverlay,
             BakedModel model,
+            boolean renderOpenBundle,
+            float z,
             CallbackInfo ci) {
         if (itemDisplayContext != ItemDisplayContext.GROUND) return;
 
